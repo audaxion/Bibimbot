@@ -19,7 +19,7 @@
     "hubot-irc": ">= 0.0.6",
     "hubot-scripts": ">= 2.1.0",
     "optparse": "1.0.3",
-	  "mongodb": ">= 1.1.7",
+    "mongodb": ">= 1.1.7",
     "xml2js": "0.1.14",
     "jsdom": "0.2.14",
     "htmlparser": "1.7.6",
