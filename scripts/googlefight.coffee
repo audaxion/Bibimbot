@@ -16,8 +16,6 @@
 # Author:
 #   siksia
 
-async = require("async")
-
 commify = (number) ->
   [left, right] = number.toString().split('.')
 
