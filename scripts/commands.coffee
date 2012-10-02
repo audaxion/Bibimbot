@@ -65,7 +65,7 @@ module.exports = (robot) ->
       msg.send cred.replace("NICK", nick)
       
   robot.hear /^!wtf (--add)? ?([A-Za-z0-9]+) ?(.*)$/i, (msg) ->
-    robot.brain.data.wtf ?= []
+    robot.brain.data.wtf ?= {}
     if msg.match[1] and msg.match[2] and msg.match[3]
       acronym = msg.match[2].toUpperCase()
       definition = msg.match[3]

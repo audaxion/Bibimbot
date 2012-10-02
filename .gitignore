@@ -1,3 +1,5 @@
 node_modules
+!node_modules/hubot
+!node_modules/hubot-irc
 .DS_Store*
 .env
