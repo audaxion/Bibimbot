@@ -129,8 +129,3 @@ module.exports = (robot) ->
     msg.send "    o     \\o    \\o/   \\o    o    <o     <o>    o>    o"
     msg.send "   .|.     |.    |     /    X     \\      |    <|    <|>"
     msg.send "   / \\     >\\   /<     >\\  /<     >\\    /<     >\\   /<"
-
-  robot.respond /convert wtf/i, (msg) ->
-    for k, v of robot.brain.data.wtf
-      key = k.toUpperCase()
-      robot.brain.data.wtf[key] = v
