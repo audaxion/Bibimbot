@@ -19,35 +19,9 @@
 Url   = require "url"
 mongodb = require "mongodb"
 
-generate_mongo_url = (obj) ->
-    obj.hostname = (obj.hostname || 'localhost');
-    obj.port = (obj.port || 27017);
-    obj.db = (obj.db || 'test');
-    if(obj.username && obj.password){
-        return "mongodb://" + obj.username + ":" + obj.password + "@" + obj.hostname + ":" + obj.port + "/" + obj.db;
-    }
-    else{
-        return "mongodb://" + obj.hostname + ":" + obj.port + "/" + obj.db;
-    }
-
 # sets up hooks to persist the brain into mongodb.
 module.exports = (robot) ->
-  if(process.env.VCAP_SERVICES){
-      var env = JSON.parse(process.env.VCAP_SERVICES);
-      var mongo = env['mongodb-1.8'][0]['credentials'];
-  }
-  else{
-      var mongo = {
-      "hostname":"localhost",
-      "port":27017,
-      "username":"",
-      "password":"",
-      "name":"",
-      "db":"db"
-      }
-  }
-  # info   = Url.parse process.env.MONGOLAB_URI || 'http://127.0.0.1:27017/hubot'
-  info = Url.parse generate_mongo_url(mongo)
+  info   = Url.parse process.env.MONGOLAB_URI || 'http://127.0.0.1:27017/hubot'
   # define mongo server and client for hubot database.
   server = new mongodb.Server(info.hostname, (Number) info.port, {})
   # strip leading slash from database name
@@ -87,7 +61,7 @@ connectionOpened = (robot, client, connection) ->
     # retrieve the collection storage.
     connection.collection 'storage', (err, collection) ->
       # remove the object from the database.
-      collection.remove {}
+      # collection.remove {}
       # save the new data provided by the robot brain.
       collection.save data
 
