@@ -60,8 +60,6 @@ connectionOpened = (robot, client, connection) ->
   robot.brain.on 'save', (data) ->
     # retrieve the collection storage.
     connection.collection 'storage', (err, collection) ->
-      # remove the object from the database.
-      # collection.remove {}
       # save the new data provided by the robot brain.
       collection.save data
 
