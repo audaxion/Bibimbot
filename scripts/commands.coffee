@@ -62,7 +62,7 @@ module.exports = (robot) ->
       nick = msg.match[2] if msg.match[2]
       cred = msg.random robot.brain.data.cred
       console.log "#{nick} #{cred}"
-      msg.send cred.replace("NICK", nick)
+      msg.send cred.replace(/NICK/g, nick)
       
   robot.hear /^!wtf (--add)? ?([A-Za-z0-9]+) ?(.*)$/i, (msg) ->
     robot.brain.data.wtf ?= {}
