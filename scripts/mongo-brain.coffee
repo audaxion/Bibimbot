@@ -25,7 +25,7 @@ module.exports = (robot) ->
   # define mongo server and client for hubot database.
   server = new mongodb.Server(info.hostname, (Number) info.port, {})
   # strip leading slash from database name
-  client = new mongodb.Db(info.pathname.split("/")[1], server);
+  client = new mongodb.Db(info.pathname.split("/")[1], server, {safe: false});
 
   #open a connection
   client.open (err, connection) ->
