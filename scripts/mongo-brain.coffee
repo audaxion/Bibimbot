@@ -23,7 +23,7 @@ mongodb = require "mongodb"
 module.exports = (robot) ->
   info   = Url.parse process.env.MONGOLAB_URI || 'http://127.0.0.1:27017/hubot'
   # define mongo server and client for hubot database.
-  server = new mongodb.Server(info.hostname, (Number) info.port, {safe: false})
+  server = new mongodb.Server(info.hostname, (Number) info.port)
   # strip leading slash from database name
   client = new mongodb.Db(info.pathname.split("/")[1], server);
 
