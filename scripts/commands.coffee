@@ -11,6 +11,7 @@
 #   !topic [--append] <topic> - changes room topic
 #   !blame [person] <thing> - blames person for thing
 #   hubot join <channel> - tells hubot to join a channel
+#   hubot part <channel> - tells hubot to leave a channel
 #   !cred [--add] [person] - gives someone props
 #   !wtf [--add] <acronym> [definition] - wtf is something
 #   !facepalm - ascii facepalm
@@ -37,7 +38,6 @@ module.exports = (robot) ->
       topic = "#{robot.brain.data.topic} #{topic}"
     
     robot.brain.data.channel[channel].topic = topic
-    #msg.topic robot.brain.data.channel[channel].topic
     robot.adapter.command('TOPIC', channel, robot.brain.data.channel[channel].topic, user)
     
   robot.hear /^!blame ?(.*)$/i, (msg) ->
@@ -50,10 +50,12 @@ module.exports = (robot) ->
     thing = msg.match[1] if msg.match[1]
     
     msg.send "\u0001ACTION blames #{blame} for #{thing}\u0001"
-    #robot.adapter.command('CTCP', channel, "ACTION blames #{blame} for #{thing}")
     
   robot.respond /join (\#.*)$/i, (msg) ->
     robot.adapter.join msg.match[1] if msg.match[1]
+
+  robot.respond /part (\#.*)$/i, (msg) ->
+    robot.adapter.part msg.match[1] if msg.match[1]
     
   robot.hear /^!cred ?(--add)? ?(.*)$/i, (msg) ->
     robot.brain.data.cred ?= []
