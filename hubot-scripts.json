@@ -12,7 +12,7 @@
   "invalid.coffee",
   "lmgtfy.coffee",
   "look-of-disapproval.coffee",
-  "meme_generator.coffee",
+  "meme_captain.coffee",
   "urban.coffee",
   "chuck-norris.coffee", 
   "shipit.coffee", 
@@ -23,5 +23,11 @@
   "cowsay.coffee",
   "wordnik.coffee",
   "rimshot.coffee",
-  "ping.coffee"
+  "ping.coffee",
+  "grumpycat.coffee",
+  "http-info.coffee",
+  "insult.coffee",
+  "spotify.coffee",
+  "youtube-info.coffee",
+  "swanson.coffee"
   ]

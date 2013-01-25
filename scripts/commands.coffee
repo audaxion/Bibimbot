@@ -30,23 +30,27 @@ module.exports = (robot) ->
   robot.hear /^!topic (--append)? ?(.*)$/i, (msg) ->
     topic = msg.match[2]
     channel = "#{msg.message.user.room}"
+    user = "#{msg.message.user.name}"
     robot.brain.data.channel or= {}
     robot.brain.data.channel[channel] ?= {}
     if msg.match[1] and robot.brain.data.channel[channel].topic
       topic = "#{robot.brain.data.topic} #{topic}"
     
     robot.brain.data.channel[channel].topic = topic
-    msg.topic robot.brain.data.channel[channel].topic
+    #msg.topic robot.brain.data.channel[channel].topic
+    robot.adapter.command('TOPIC', channel, robot.brain.data.channel[channel].topic, user)
     
   robot.hear /^!blame ?(.*)$/i, (msg) ->
     blame = "someone"
     thing = "something"
     channel = "#{msg.message.user.room}"
+    user = "#{msg.message.user.name}"
 
     blame = msg.random robot.brain.data.channel[channel].names
     thing = msg.match[1] if msg.match[1]
     
-    msg.action "blames #{blame} for #{thing}"
+    msg.send "\u0001ACTION blames #{blame} for #{thing}\u0001"
+    #robot.adapter.command('CTCP', channel, "ACTION blames #{blame} for #{thing}")
     
   robot.respond /join (\#.*)$/i, (msg) ->
     robot.adapter.join msg.match[1] if msg.match[1]
