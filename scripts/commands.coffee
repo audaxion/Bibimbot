@@ -35,10 +35,11 @@ module.exports = (robot) ->
     robot.brain.data.channel or= {}
     robot.brain.data.channel[channel] ?= {}
     if msg.match[1] and robot.brain.data.channel[channel].topic
-      topic = "#{robot.brain.data.topic} #{topic}"
+      topic = "#{robot.brain.data.channel[channel].topic} #{topic}"
     
     robot.brain.data.channel[channel].topic = topic
-    robot.adapter.command('TOPIC', channel, robot.brain.data.channel[channel].topic, user)
+    console.log robot.brain.data.channel[channel].topic
+    robot.adapter.topic(msg.message.user, topic)
     
   robot.hear /^!blame ?(.*)$/i, (msg) ->
     blame = "someone"
@@ -49,7 +50,7 @@ module.exports = (robot) ->
     blame = msg.random robot.brain.data.channel[channel].names
     thing = msg.match[1] if msg.match[1]
     
-    msg.send "\u0001ACTION blames #{blame} for #{thing}\u0001"
+    robot.adapter.action(msg.message.user, "blames #{blame} for #{thing}")
     
   robot.respond /join (\#.*)$/i, (msg) ->
     robot.adapter.join msg.match[1] if msg.match[1]
