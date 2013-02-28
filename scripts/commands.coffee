@@ -39,7 +39,7 @@ module.exports = (robot) ->
     
     robot.brain.data.channel[channel].topic = topic
     console.log robot.brain.data.channel[channel].topic
-    robot.adapter.topic(msg.message.user, topic)
+    robot.adapter.topic(msg.message.user, "#{topic}")
     
   robot.hear /^!blame ?(.*)$/i, (msg) ->
     blame = "someone"
