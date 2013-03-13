@@ -42,7 +42,7 @@ module.exports = (robot) ->
     else
       robot.logger.debug "Successfully connected to Mongo"
 
-      db.createCollection 'storage', (err, collection) ->
+      db.collection 'storage', (err, collection) ->
         collection.findOne {}, (err, document) ->
           if err?
             throw err
