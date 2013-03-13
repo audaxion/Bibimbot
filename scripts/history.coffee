@@ -41,11 +41,16 @@ class History
   entryToString: (event) ->
     return '[' + event.hours + ':' + event.minutes + '] ' + event.name + ': ' + event.message
 
-  findForName: (name, channel, string) ->
+  findLastMessageForName: (name, channel, string) ->
     console.log "Searching for \"#{string}\" from #{name} in #{channel}"
-    messages = (historyItem.message for historyItem in @cache.slice(0, -1) when (historyItem.name is name and historyItem.channel is channel)).reverse()
-    message = (message for message in messages when message.match(new RegExp(@escapeForRegExp(string), "i")))[0]
+    message = (message.message for message in @findAllMessagesForName(name, channel) when message.message.match(new RegExp(@escapeForRegExp(string), "i"))).reverse()[0]
     return message
+
+  findAllMessagesForName: (name, channel, string) ->
+    console.log "Searching for messages from #{name} in #{channel}"
+    messages = (historyItem for historyItem in @cache.slice(0, -1) when (historyItem.name is name and (historyItem.channel is channel or typeof historyItem.channel is 'undefined')))
+    console.log messages
+    return messages
 
   escapeForRegExp: (str) ->
     return str.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1")
@@ -82,10 +87,10 @@ module.exports = (robot) ->
       historyentry = new HistoryEntry(msg.message.user.name, msg.message.user.room, "<#{msg.message.user.name}> #{msg.match[1]}")
       history.add historyentry
 
-  robot.respond /remember ([A-Za-z0-9]+) (.+)/i, (msg) ->
+  robot.respond /remember (\S+) (.+)/i, (msg) ->
     name = msg.match[1]
     
-    message = history.findForName(name, msg.message.user.room, msg.match[2])
+    message = history.findLastMessageForName(name, msg.message.user.room, msg.match[2])
     if (typeof message isnt 'undefined')
       robot.brain.data.bucket ?= {}
       robot.brain.data.bucket.factoids ?= {}
@@ -102,14 +107,21 @@ module.exports = (robot) ->
       robot.brain.data.bucket.factoid_id = factoid_id
       msg.send "Ok, #{msg.message.user.name}, remembering \"#{message}\""
     else
-      msg.send "Sorry, #{msg.message.user.name}, I couldn't find anything about that"
+      msg.send "Sorry, #{msg.message.user.name}, I couldn't find anything about \"#{msg.match[2]}\""
 
-  robot.respond /show ((\d+) lines of )?history/i, (msg) ->
+  robot.respond /show ((\d+) lines of )?history( for (\S+))?/i, (msg) ->
     if msg.match[2]
       lines = msg.match[2]
     else
       lines = history.keep
-    msg.send history.show(lines)
+    if msg.match[4]
+      messages = history.findAllMessagesForName(msg.match[4], msg.message.user.room)
+      if messages.length > 0
+        msg.send history.entryToString(message) + '\n' for message in messages
+      else
+        msg.send "No messages for #{msg.match[4]}"
+    else 
+      msg.send history.show(lines)
 
   robot.respond /clear history/i, (msg) ->
     msg.send "Ok, I'm clearing the history."
