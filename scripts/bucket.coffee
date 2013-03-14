@@ -26,15 +26,17 @@ _ = require('underscore')
 class Bucket
   constructor: (@robot, @min_factoid_length) ->
     @cache = {}
+    self = @
     @robot.brain.on 'loaded', =>
       if @robot.brain.data.bucket
         @robot.logger.info "Loading saved bucket"
         @cache = @robot.brain.data.bucket
+      setTimeout (-> self.sayRandomFactoid()), 15*1000
 
   findFactoidsForKey: (key) ->
     return @cache.factoids[key]
 
-  sayRandomFactoid: (msg, key) ->
+  sayRandomFactoidForKey: (msg, key) ->
     factoid = new Factoid(@random(@findFactoidsForKey(key)))
     if (factoid)
       @cache.last_factoid_id = factoid.id
@@ -89,7 +91,20 @@ class Bucket
     unless message.match(new RegExp(matcherString, "i"))
       key = @checkForFactoid(message) 
       if key
-        @sayRandomFactoid(msg, key)
+        @sayRandomFactoidForKey(msg, key)
+
+  sayRandomFactoid: ->
+    self = @
+    key = @random(_.keys(@cache.factoids))
+    channels = process.env.HUBOT_IRC_ROOMS.split(",")
+    for channel in channels
+      msg = "message": {
+        "user": {
+          "room": "#{channel}"
+        }
+      }
+      @sayRandomFactoidForKey(msg, key)
+      setTimeout (-> self.sayRandomFactoid()), _.random(60,600)*1000
 
 class Factoid
   constructor: (factoid) ->
@@ -132,7 +147,6 @@ module.exports = (robot) ->
 
   robot.respond /(.+) (is|are|<reply>|<action>) (.+)/i, (msg) ->
     if msg.match[1] and msg.match[3]
-      console.log "#{msg.match[1]}, #{msg.match[2]}, #{msg.match[3]}"
       factoid = bucket.addFactoid(msg.match[1], msg.match[2], msg.match[3])
       msg.send "Ok, #{msg.message.user.name}, #{factoid}" if factoid
 
