@@ -155,7 +155,7 @@ module.exports = (robot) ->
     if factoid
       msg.send "That was: #{new Factoid(factoid.val).sayLiteral(factoid.key)}"
     else
-      msg.send "Error: not found!"
+      bucket.sayRandomFactoidForKey(msg, "don't know")
 
   robot.respond /(forget|delete) (that)?(#(\d+))?/i, (msg) ->
     factoid = bucket.deleteLastFactoidId() if msg.match[2]
@@ -163,4 +163,4 @@ module.exports = (robot) ->
     if factoid
       msg.send "Ok, #{msg.message.user.name}, forgot that #{new Factoid(factoid.val).sayLiteral(factoid.key)}"
     else
-      msg.send "Error: not found!"
+      bucket.sayRandomFactoidForKey(msg, "don't know")
