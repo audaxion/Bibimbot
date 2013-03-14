@@ -104,7 +104,7 @@ class Bucket
         }
       }
       @sayRandomFactoidForKey(msg, key)
-      setTimeout (-> self.sayRandomFactoid()), _.random(60,600)*1000
+      setTimeout (-> self.sayRandomFactoid()), _.random(60,3600)*1000
 
 class Factoid
   constructor: (factoid) ->
