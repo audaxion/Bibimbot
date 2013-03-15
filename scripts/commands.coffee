@@ -137,6 +137,67 @@ module.exports = (robot) ->
     msg.send "   .|.     |.    |     /    X     \\      |    <|    <|>"
     msg.send "   / \\     >\\   /<     >\\  /<     >\\    /<     >\\   /<"
 
+  robot.hear /^!populatevars/i, (msg) ->
+    msg.send "VARS"
+    robot.brain.data.bucket.vars = {
+            "verb":{
+                "type":"verb",
+                "values":[                    "hug", "kiss", "listen", "run", "shriek", "sleep", "smash", "talk", "use", "walk"                ]
+            },
+            "noun":{
+                "type":"noun",
+                "values":[                    "acid", "acorn", "bacon", "battery", "beef", "cake", "comic", "device", "factoid", "galaxy", "idea", "magic", "mindjail", "phone", "potato", "salami", "shirt", "sword", "tooth", "wrench"                ]
+            },
+            "adjective":{
+                "type":"var",
+                "values":[                    "adorable", "cold", "fast", "fuzzy", "gigantic", "hairless", "hairy", "hot", "huge", "iridescent", "lukewarm", "moldy", "repulsive", "rough", "royal", "sharp", "shiny", "slow", "smelly", "smooth", "sparkly", "spicy", "spikey", "spooky", "squishy", "sticky", "tangy", "tiny", "warm", "windy", "wonky"                ]
+            },
+            "digit":{
+                "type":"var",
+                "values":[                    "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"                ]
+            },
+            "preposition":{
+                "type":"var",
+                "values":[                    "across", "at", "behind", "between", "excluding", "in", "near", "on", "opposite", "over", "regarding", "under", "upon", "via", "within"                ]
+            },
+            "color":{
+                "type":"var",
+                "values":[                    "blue", "cerulean", "chartreuse", "indigo", "mahogany", "maroon", "octarine", "plum", "puce", "red", "saffron", "teal"                ]
+            },
+            "article":{
+                "type":"var",
+                "values":[                    "a", "the"                ]
+            },
+            "weekday":{
+                "type":"var",
+                "values":[                    "Friday", "Monday", "Saturday", "Sunday", "Thursday", "Tuesday", "Wednesday"                ]
+            },
+            "band":{
+                "type":"var",
+                "values":[                    "alert inspector bizlogic", "Alpine Shark Attack", "away from openvpn", "bancomicsans is cool", "binder is awesome", "bl party today", "call or irc", "can we help", "Cant talk zombies", "coal creek pkwy", "cogito ergo yum", "could be stationgateposition", "crapitty crap crapper", "did you ride", "except exceptions excellently", "fish are friends", "for his triggers", "from outer space", "gbarta is cool", "gbarta kicking butt", "give you up", "googlefight andrew george", "googlefight ken ryu", "googlefight renton newcastle", "googlefight robb rob", "googlefight scrum waterfall", "hes dead jim", "hipstersia", "hmmm yes quite", "hows it going", "humans are friends", "I am beautiful", "I am dumb", "I am great", "I am obnixious", "I dont know", "I have TOAST", "I know this", "I mean bizlogic", "I NEED SOMEBODY", "i thought so", "in ASUS nonetheless", "Internet Robot Cats", "issue with totalTime", "it is certain", "just doing it", "kill all humans", "let you down", "Leta doing well", "lol just 2", "longcat is long", "maybe demo data", "moore has it", "no caching yet", "no time select", "NOT JUST ANYBODY", "not sure checking", "not the core", "not the face", "Oh Hail No", "oh only 4", "ok gotta go", "ok not all", "One Tectura Tradewinds", "onetectooda loves apple", "only in attitude", "only took 45min", "ouch bad speeling", "ph0rman hates spiders", "PikaJim is cool", "please ask manatee", "points all around", "push button scenario", "Ravi is cool", "reminiscent of phreaking", "siksia is clutch", "siksia is cool", "siksia is rad", "siksia is sick", "siksia is tight", "siksia is wicked", "since its new", "sky is blue", "so on hold", "Team is cool", "The Simple Sounds", "there is hope", "there we go", "theyre aircraft comments", "UNCAUGHT EXCEPTION TERMINATING", "very good movie", "water is wet", "we be jamin", "What are you", "what is cool", "what is heads", "who is cool", "why no work", "Wobbly Tunes", "works for me", "yeah fix that", "yeah thats right", "yeah working fine"                ]
+            },
+            "weapon":{
+                "type":"noun",
+                "values":[                    "crowbar", "maint log", "nunchucks", "running chainsaw", "sheep and a wheat", "spoon", "sword"                ]
+            },
+            "bodypart":{
+                "type":"noun",
+                "values":[                    "face", "foosball", "spleen"                ]
+            },
+            "insult1":{
+                "type":"var",
+                "values":[                    "artless", "bawdy", "beslubbering", "bootless", "churlish", "clouted", "cockered", "craven", "currish", "dankish", "dissembling", "droning", "errant", "fawning", "fobbing", "frothy", "froward", "gleeking", "goatish", "gorbellied", "impertinent", "infectious", "jarring", "loggerheaded", "lumpish", "mammering", "mangled", "mewling", "paunchy", "pribbling", "puking", "puny", "qualling", "rank", "reeky", "roguish", "ruttish", "saucy", "spleeny", "spongy", "surly", "tottering", "unmuzzled", "vain", "venomed", "villainous", "warped", "wayward", "weedy", "yeasty"                ]
+            },
+            "insult2":{
+                "type":"var",
+                "values":[                    "base-court", "bat-fowling", "beef-witted", "beetle-headed", "boil-brained", "clapper-clawed", "clay-brained", "common-kissing", "crook-pated", "dismal-dreaming", "dizzy-eyed", "doghearted", "dread-bolted", "earth-vexing", "elf-skinned", "fat-kidneyed", "fen-sucked", "flap-mouthed", "fly-bitten", "folly-fallen", "fool-born", "full-gorged", "guts-griping", "half-faced", "hasty-witted", "hedge-born", "hell-hated", "idle-headed", "ill-breeding", "ill-nurtured", "knotty-pated", "milk-livered", "motley-minded", "onion-eyed", "plume-plucked", "pottle-deep", "pox-marked", "reeling-ripe", "rough-hewn", "rude-growing", "rump-fed", "shard-borne", "sheep-biting", "spur-galled", "swag-bellied", "tardy-gaited", "tickle-brained", "toad-spotted", "unchin-snouted", "weather-bitten"                ]
+            },
+            "insult3":{
+                "type":"var",
+                "values":[                    "apple-john", "baggage", "barnacle", "bladder", "boar-pig", "bugbear", "bum-bailey", "canker-blossom", "clack-dish", "clotpole", "codpiece", "coxcomb", "death-token", "dewberry", "flap-dragon", "flax-wench", "flirt-gill", "foot-licker", "fustilarian", "giglet", "gudgeon", "haggard", "harpy", "hedge-pig", "horn-beast", "hugger-mugger", "joithead", "lewdster", "lout", "maggot-pie", "malt-worm", "mammet", "measle", "minnow", "miscreant", "moldwarp", "mumble-news", "nut-hook", "pigeon-egg", "pignut", "pumpion", "puttock", "ratsbane", "scut", "skainsmate", "strumpet", "varlot", "vassal", "wagtail", "whey-face"                ]
+            }
+        }
+
   robot.hear /^!populatedefaults/i, (msg) ->
     msg.send "POPULATING..."
     robot.brain.data.cred = [        
