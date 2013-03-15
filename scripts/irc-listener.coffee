@@ -43,4 +43,4 @@ module.exports = (robot) ->
 
   robot.adapter.topic = (user, strings...) ->
     console.log "Changing topic in #{user.room} to #{strings.join(' | ')}"
-    @bot.send "topic", user.room, strings
+    @bot.send "topic", user.room, strings.join(' | ')
