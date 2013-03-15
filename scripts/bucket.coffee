@@ -256,7 +256,7 @@ class Bucket
       if @robot.brain.data.bucket
         @robot.logger.info "Loading saved bucket"
         @cache = @robot.brain.data.bucket
-      setTimeout (-> self.sayRandomFactoid()), 15*1000
+      setTimeout (-> self.sayIdleFactoid()), 15*1000
 
   findFactoidsForKey: (key) ->
     return @cache.factoids[key]
@@ -313,24 +313,40 @@ class Bucket
     items[ Math.floor(Math.random() * items.length) ]
 
   listenForFactoid: (msg, message) ->
-    matcherString = "#{@escapeForRegExp(@robot.name)}(,|:)? ((what was|forget|delete) (that|#\d+)|((list|create|remove) var)|((add|remove) value)|(var \w+ type))"
-    unless message.match(new RegExp(matcherString, "i"))
+    matcher = ///
+      ^(#{@escapeForRegExp(@robot.name)})(,|:)?\s+ #check to see if hubot is being addressed
+      (
+      ((what\swas|forget|delete)\s(that|\#\d+))| #recall or forget factoid
+      ((list|create|remove)\svar)| #list, create or remove vars
+      ((add|remove)\svalue)| #add, remove value from var
+      (var\s\w+\stype)| #change type for var
+      (something\srandom) #something random
+      )
+    ///i
+    #unless message.match(new RegExp(matcherString, "i"))
+    unless message.match(matcher)
       key = @checkForFactoid(message) 
       if key
         @sayRandomFactoidForKey(msg, key)
 
-  sayRandomFactoid: ->
-    self = @
+  sayRandomFactoidForChannel: (channel) ->
     key = @random(_.keys(@cache.factoids))
+    msg = "message": {
+      "user": {
+        "room": "#{channel}"
+      }
+    }
+    @sayRandomFactoidForKey(msg, key)
+
+  sayRandomFactoid: ->
     channels = process.env.HUBOT_IRC_ROOMS.split(",")
     for channel in channels
-      msg = "message": {
-        "user": {
-          "room": "#{channel}"
-        }
-      }
-      @sayRandomFactoidForKey(msg, key)
-      setTimeout (-> self.sayRandomFactoid()), _.random(60,3600)*1000
+      @sayRandomFactoidForChannel(channel)
+
+  sayIdleFactoid: ->
+    self = @
+    @sayRandomFactoid()
+    setTimeout (-> self.sayIdleFactoid()), _.random(60,3600)*1000
 
   parseFactoid: (msg, factoid) ->
     self = @
@@ -440,3 +456,6 @@ module.exports = (robot) ->
       msg.send "Ok, #{msg.message.user.name}, forgot that #{new Factoid(factoid.val).sayLiteral(factoid.key)}"
     else
       bucket.sayRandomFactoidForKey(msg, "don't know")
+
+  robot.respond /something random/i, (msg) ->
+    bucket.sayRandomFactoidForChannel(msg.message.user.room)
