@@ -1,5 +1,5 @@
 # Description:
-#   Atempt to replicate xkcd bucket using hubot
+#   Attempt to replicate xkcd bucket (http://wiki.xkcd.com/irc/bucket) using hubot
 #
 # Dependencies:
 #   "jsdom": "~0.2.14",
@@ -10,7 +10,7 @@
 #   None
 #
 # Commands:
-#
+#   see http://wiki.xkcd.com/irc/bucket for approximate commands
 # Notes:
 #   None
 #
