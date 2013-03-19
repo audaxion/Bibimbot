@@ -527,14 +527,14 @@ module.exports = (robot) ->
 
   robot.respond /add value (\S+) (.+)/i, (msg) ->
     val = bucket.addValForVar(msg.match[1], msg.match[2])
-    if vals
+    if val
       msg.send "Ok, #{msg.message.user.name}, added #{val} to #{msg.match[1]}"
     else
       bucket.sayRandomFactoidForKey(msg, "don't know")
 
   robot.respond /remove value (\S+) (.+)/i, (msg) ->
     val = bucket.removeValForVar(msg.match[1], msg.match[2])
-    if vals
+    if val
       msg.send "Ok, #{msg.message.user.name}, removed #{val} from #{msg.match[1]}"
     else
       bucket.sayRandomFactoidForKey(msg, "don't know")
