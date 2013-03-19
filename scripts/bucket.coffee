@@ -303,6 +303,8 @@ class Bucket
   deleteFactoidForId: (id) ->
     factoid = @findFactoidForId(id)
     @cache.factoids[factoid.key] = _.without(@cache.factoids[factoid.key], factoid.val)
+    unless @cache.factoids[factoid.key].length > 0
+      delete @cache.factoids[factoid.key]
     @robot.brain.data.bucket = @cache
     return factoid
 
@@ -397,6 +399,11 @@ class Bucket
         return match
     return factoid
 
+  listVars: ->
+    _.keys(@cache.vars).join(", ")
+
+  listValsForVar: (key) ->
+    return @cache.vars[key].values if @cache.vars[key]
 
 class Factoid
   constructor: (factoid) ->
@@ -459,3 +466,6 @@ module.exports = (robot) ->
 
   robot.respond /something random/i, (msg) ->
     bucket.sayRandomFactoidForChannel(msg.message.user.room)
+
+  robot.respond /list vars/i, (msg) ->
+    msg.send bucket.listVars()
