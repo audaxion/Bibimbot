@@ -264,7 +264,7 @@ class Bucket
   sayRandomFactoidForKey: (msg, key) ->
     factoid = new Factoid(@random(@findFactoidsForKey(key)))
     if (factoid)
-      @cache.last = factoid.id
+      @cache.last_factoid_id = factoid.id
       line = @parseFactoid(msg, factoid.say(key))
       switch factoid.verb
         when "<action>" then @robot.adapter.action(msg.message.user, line)
@@ -421,7 +421,7 @@ module.exports = (robot) ->
     min_factoid_length: process.env.HUBOT_MIN_FACTOID_LENGTH
 
   unless options.min_factoid_length
-    options.min_factoid_length = 3
+    options.min_factoid_length = 2
 
   bucket = new Bucket(robot, options.min_factoid_length)
 
