@@ -290,7 +290,7 @@ class Bucket
       unless _.find(@cache.factoids[key], (factoid) -> (factoid.tidbit is tidbit) and (factoid.verb is verb))
         @cache.factoids[key].push factoid
         @robot.brain.data.bucket = @cache
-        return new Factoid(factoid).sayLiteral(key)
+        return "#{key} #{new Factoid(factoid).sayLiteral()}"
 
   findFactoidForId: (id) ->
     if id
@@ -318,11 +318,12 @@ class Bucket
     matcher = ///
       ^(#{@escapeForRegExp(@robot.name)})(,|:)?\s+ #check to see if hubot is being addressed
       (
-      ((what\swas|forget|delete)\s(that|\#\d+))| #recall or forget factoid
+      ((what\swas|forget|delete|lookup)\s(that|\#\d+))| #recall or forget factoid
       ((list|create|remove)\svar)| #list, create or remove vars
       ((add|remove)\svalue)| #add, remove value from var
       (var\s\w+\stype)| #change type for var
-      (something\srandom) #something random
+      (something\srandom)| #something random
+      (literal\s(.+)) #literal factoid
       )
     ///i
     #unless message.match(new RegExp(matcherString, "i"))
@@ -403,7 +404,43 @@ class Bucket
     _.keys(@cache.vars).join(", ")
 
   listValsForVar: (key) ->
-    return @cache.vars[key].values if @cache.vars[key]
+    return @cache.vars[key].values.join(", ") if @cache.vars[key]
+
+  removeValForVar: (key, val) ->
+    varItem = @cache.vars[key]
+    if varItem and _.contains(varItem.values, val)
+      varItem.values = _.without(varItem.values, val)
+      @cache.vars[key] = varItem
+      @robot.brain.data.bucket = @cache
+      return val
+
+  addValForVar: (key, val) ->
+    varItem = @cache.vars[key]
+    if varItem and not _.contains(varItem.values, val)
+      varItem.values.push val
+      @cache.vars[key] = varItem
+      @robot.brain.data.bucket = @cache
+      return val
+
+  createVar: (key) ->
+    @cache.vars[key] = 
+      "type": "var",
+      "values": []
+    @robot.brain.data.bucket = @cache
+
+  removeVar: (key) ->
+    if @cache.vars[key]
+      delete @cache.vars[key]
+      @robot.brain.data.bucket = @cache
+      return key
+
+  setVarType: (key, type) ->
+    varItem = @cache.vars[key]
+    if varItem
+      varItem.type = type
+      @cache.vars[key] = varItem
+      @robot.brain.data.bucket = @cache
+      return type
 
 class Factoid
   constructor: (factoid) ->
@@ -419,8 +456,8 @@ class Factoid
       when "is", "are" then "#{key} #{@verb} #{@parseTidbit()}"
       else @parseTidbit()
 
-  sayLiteral: (key) ->
-    "#{key} #{@verb} #{@parseTidbit()} [##{@id}]"
+  sayLiteral: ->
+    "#{@verb} #{@parseTidbit()} [##{@id}]"
 
 module.exports = (robot) ->
 
@@ -449,10 +486,11 @@ module.exports = (robot) ->
       factoid = bucket.addFactoid(msg.match[1], msg.match[2], msg.match[3])
       msg.send "Ok, #{msg.message.user.name}, #{factoid}" if factoid
 
-  robot.respond /what was that/i, (msg) ->
-    factoid = bucket.findFactoidForLastId()
+  robot.respond /(what was|lookup) (that)?(#(\d+))?/i, (msg) ->
+    factoid = bucket.findFactoidForLastId() if msg.match[2]
+    factoid = bucket.findFactoidForId(msg.match[4]) if msg.match[4]
     if factoid
-      msg.send "That was: #{new Factoid(factoid.val).sayLiteral(factoid.key)}"
+      msg.send "That was: #{factoid.key} #{new Factoid(factoid.val).sayLiteral()}"
     else
       bucket.sayRandomFactoidForKey(msg, "don't know")
 
@@ -460,7 +498,17 @@ module.exports = (robot) ->
     factoid = bucket.deleteLastFactoidId() if msg.match[2]
     factoid = bucket.deleteFactoidForId(msg.match[4]) if msg.match[4]
     if factoid
-      msg.send "Ok, #{msg.message.user.name}, forgot that #{new Factoid(factoid.val).sayLiteral(factoid.key)}"
+      msg.send "Ok, #{msg.message.user.name}, forgot that #{factoid.key} #{new Factoid(factoid.val).sayLiteral()}"
+    else
+      bucket.sayRandomFactoidForKey(msg, "don't know")
+
+  robot.respond /literal (.+)/i, (msg) ->
+    factoids = bucket.findFactoidsForKey(msg.match[1])
+    if factoids
+      if factoids.length > 10
+        msg.message.user.room = null
+      facts = factoids.map (factoid) -> new Factoid(factoid).sayLiteral()
+      msg.send "Listing all factoids for #{msg.match[1]}\n#{facts.join("\n")}"
     else
       bucket.sayRandomFactoidForKey(msg, "don't know")
 
@@ -469,3 +517,42 @@ module.exports = (robot) ->
 
   robot.respond /list vars/i, (msg) ->
     msg.send bucket.listVars()
+
+  robot.respond /list var (\S+)/i, (msg) ->
+    vals = bucket.listValsForVar(msg.match[1])
+    if vals
+      msg.send vals
+    else
+      bucket.sayRandomFactoidForKey(msg, "don't know")
+
+  robot.respond /add value (\S+) (.+)/i, (msg) ->
+    val = bucket.addValForVar(msg.match[1], msg.match[2])
+    if vals
+      msg.send "Ok, #{msg.message.user.name}, added #{val} to #{msg.match[1]}"
+    else
+      bucket.sayRandomFactoidForKey(msg, "don't know")
+
+  robot.respond /remove value (\S+) (.+)/i, (msg) ->
+    val = bucket.removeValForVar(msg.match[1], msg.match[2])
+    if vals
+      msg.send "Ok, #{msg.message.user.name}, removed #{val} from #{msg.match[1]}"
+    else
+      bucket.sayRandomFactoidForKey(msg, "don't know")
+
+  robot.respond /create var (\S+)/i, (msg) ->
+    bucket.createVar(msg.match[1])
+    msg.send "Ok, #{msg.message.user.name}, created var #{msg.match[1]}"
+
+  robot.respond /remove var (\S+)/i, (msg) ->
+    varKey = bucket.removeVar(msg.match[1])
+    if varKey
+      msg.send "Ok, #{msg.message.user.name}, removed var #{varKey}"
+    else
+      bucket.sayRandomFactoidForKey(msg, "don't know")
+
+  robot.respond /var (\S+) type (var|verb|noun)/i, (msg) ->
+    type = bucket.setVarType(msg.match[1], msg.match[2])
+    if type
+      msg.send "Ok, #{msg.message.user.name}, var #{msg.match[1]} is now type #{type}"
+    else
+      bucket.sayRandomFactoidForKey(msg, "don't know")
