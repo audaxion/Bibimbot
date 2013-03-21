@@ -323,10 +323,10 @@ class Bucket
       ((add|remove)\svalue)| #add, remove value from var
       (var\s\w+\stype)| #change type for var
       (something\srandom)| #something random
-      (literal\s(.+)) #literal factoid
+      (literal\s(.+))| #literal factoid
+      (.+)\s(is|are|<reply>|<action>)\s(.+) #don't trigger on creating factoid
       )
     ///i
-    #unless message.match(new RegExp(matcherString, "i"))
     unless message.match(matcher)
       key = @checkForFactoid(message) 
       if key
