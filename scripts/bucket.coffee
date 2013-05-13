@@ -263,7 +263,7 @@ class Bucket
 
   sayRandomFactoidForKey: (msg, key) ->
     factoid = new Factoid(@random(@findFactoidsForKey(key)))
-    if (factoid and factoid.id !== undefined and factoid.verb !== undefined and factoid.tidbit !== undefined)
+    if (factoid? and factoid.id? and factoid.verb? and factoid.tidbit?)
       @cache.last_factoid_id = factoid.id
       line = @parseFactoid(msg, factoid.say(key))
       switch factoid.verb
