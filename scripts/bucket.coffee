@@ -444,9 +444,10 @@ class Bucket
 
 class Factoid
   constructor: (factoid) ->
-    @id = factoid.id if factoid.id?
-    @tidbit = factoid.tidbit if factoid.tidbit?
-    @verb = factoid.verb if factoid.verb?
+    if factoid?
+      @id = factoid.id if factoid.id?
+      @tidbit = factoid.tidbit if factoid.tidbit?
+      @verb = factoid.verb if factoid.verb?
 
   parseTidbit: ->
     return @tidbit
