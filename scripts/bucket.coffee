@@ -263,7 +263,7 @@ class Bucket
 
   sayRandomFactoidForKey: (msg, key) ->
     factoid = new Factoid(@random(@findFactoidsForKey(key)))
-    if (factoid)
+    if (factoid? and factoid.id? and factoid.verb? and factoid.tidbit?)
       @cache.last_factoid_id = factoid.id
       line = @parseFactoid(msg, factoid.say(key))
       switch factoid.verb
@@ -445,9 +445,10 @@ class Bucket
 
 class Factoid
   constructor: (factoid) ->
-    @id = factoid.id
-    @tidbit = factoid.tidbit
-    @verb = factoid.verb
+    if factoid?
+      @id = factoid.id if factoid.id?
+      @tidbit = factoid.tidbit if factoid.tidbit?
+      @verb = factoid.verb if factoid.verb?
 
   parseTidbit: ->
     return @tidbit
