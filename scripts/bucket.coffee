@@ -333,13 +333,14 @@ class Bucket
         @sayRandomFactoidForKey(msg, key)
 
   sayRandomFactoidForChannel: (channel) ->
-    key = @random(_.keys(@cache.factoids))
-    msg = "message": {
-      "user": {
-        "room": "#{channel}"
+    if(@cache.factoids)
+      key = @random(_.keys(@cache.factoids))
+      msg = "message": {
+        "user": {
+          "room": "#{channel}"
+        }
       }
-    }
-    @sayRandomFactoidForKey(msg, key)
+      @sayRandomFactoidForKey(msg, key)
 
   sayRandomFactoid: ->
     channels = process.env.HUBOT_IRC_ROOMS.split(",")
