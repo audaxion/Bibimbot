@@ -27,9 +27,10 @@
 #   hubot <text> you're gonna have a bad time - Bad Time Ski Instructor
 #   hubot one does not simply <text> - Lord of the Rings Boromir
 #   hubot it looks like (you|you're) <text> - Generates Clippy
-#
+#   hubot what if I told you <text> - Morpheus
+#   hubot prepare yourself <text> - Boromir preparing
 # Author:
-#   skalnik
+#   skalnik, ph0rman, mrrobbot
 
 module.exports = (robot) ->
   unless robot.brain.data.memes?
@@ -108,6 +109,16 @@ module.exports = (robot) ->
         regex: /(it looks like you're|it looks like you) (.*)/i,
         generatorID: 20469,
         imageID: 1159769
+      }
+      {
+        regex: /(what if I told you) (.*)/i,
+        generatorID: 1118843,
+        imageID: 4796874
+      }
+      {
+        regex: /(prepare yourself) (.*)/i,
+        generatorID: 414926,
+        imageID: 2295701
       }
     ]
 
