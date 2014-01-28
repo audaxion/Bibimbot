@@ -14,6 +14,8 @@
 #   keithamus
 
 images = [
+  "http://weknowmemes.com/wp-content/uploads/2011/09/soon-cat-parrot.jpg",
+  "http://weknowmemes.com/wp-content/uploads/2011/09/soon-queen-elizabeth.jpg",
   "http://i.imgur.com/icGUhRh.jpg",
   "http://i.imgur.com/TVxNL84.png",
   "http://i.imgur.com/bFb5qZt.jpg",
