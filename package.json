@@ -1,6 +1,6 @@
 {
   "name": "hosted-hubot",
-  "version": "2.5.1",
+  "version": "2.7.1",
   "author": "GitHub Inc.",
   "keywords": "github hubot campfire bot",
   "description": "A simple helpful Robot for your Company",
@@ -16,9 +16,9 @@
   },
   "dependencies": {
     "coffee-script": ">= 1.2.0",
-    "hubot": "2.5.1",
-    "hubot-irc": ">= 0.1.12",
-    "hubot-scripts": ">= 2.4.3",
+    "hubot": "2.7.1",
+    "hubot-irc": ">= 0.1.24",
+    "hubot-scripts": ">= 2.5.7",
     "optparse": "1.0.3",
     "mongodb": ">= 1.1.7",
     "xml2js": "0.1.14",
@@ -31,7 +31,7 @@
     "natural": "~0.1.16"
   },
   "engines": {
-    "node": "0.8.x",
+    "node": "0.10.x",
     "npm": "1.1.x"
   }
 }
