@@ -262,9 +262,13 @@ class Bucket
     return @cache.factoids[key]
 
   sayRandomFactoidForKey: (msg, key) ->
+    if _.random(0,1) == 1
+      return
     factoid = new Factoid(@random(@findFactoidsForKey(key)))
     if (factoid? and factoid.id? and factoid.verb? and factoid.tidbit?)
       @cache.last_factoid_id = factoid.id
+      @cache.last_factoid ?= []
+      @cache.last_factoid[msg.message.user.room] = factoid.id
       line = @parseFactoid(msg, factoid.say(key))
       switch factoid.verb
         when "<action>" then @robot.adapter.action(msg.message.user, line)
@@ -297,8 +301,11 @@ class Bucket
       key = (key for key, factoids of @cache.factoids when _.find(factoids, (factoid) -> factoid.id is id))[0]
       return {key: key, val: _.find(@findFactoidsForKey(key), (factoid) -> factoid.id is id)} if key
 
-  findFactoidForLastId: ->
-    return @findFactoidForId(@cache.last_factoid_id)
+  findFactoidForLastId: (msg) ->
+    last_factoid_id = @cache.last_factoid_id
+    if msg.message.user.room
+      last_factoid_id = @cache.last_factoid[msg.message.user.room]
+    return @findFactoidForId(last_factoid_id)
 
   deleteFactoidForId: (id) ->
     factoid = @findFactoidForId(id)
@@ -350,7 +357,7 @@ class Bucket
   sayIdleFactoid: ->
     self = @
     @sayRandomFactoid()
-    setTimeout (-> self.sayIdleFactoid()), _.random(60,3600)*1000
+    setTimeout (-> self.sayIdleFactoid()), _.random(60,7200)*1000
 
   parseFactoid: (msg, factoid) ->
     self = @
