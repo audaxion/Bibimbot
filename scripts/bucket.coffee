@@ -315,8 +315,11 @@ class Bucket
     @robot.brain.data.bucket = @cache
     return factoid
 
-  deleteLastFactoidId: ->
-    @deleteFactoidForId(@cache.last_factoid_id)
+  deleteLastFactoidId: (msg) ->
+    last_factoid_id = @cache.last_factoid_id
+    if msg.message.user.room
+      last_factoid_id = @cache.last_factoid[msg.message.user.room]
+    @deleteFactoidForId(last_factoid_id)
 
   random: (items) ->
     items[ Math.floor(Math.random() * items.length) ]
@@ -496,7 +499,7 @@ module.exports = (robot) ->
       msg.send "Ok, #{msg.message.user.name}, #{factoid}" if factoid
 
   robot.respond /(what was|lookup) (that)?(#(\d+))?/i, (msg) ->
-    factoid = bucket.findFactoidForLastId() if msg.match[2]
+    factoid = bucket.findFactoidForLastId(msg) if msg.match[2]
     factoid = bucket.findFactoidForId(msg.match[4]) if msg.match[4]
     if factoid
       msg.send "That was: #{factoid.key} #{new Factoid(factoid.val).sayLiteral()}"
@@ -504,7 +507,7 @@ module.exports = (robot) ->
       bucket.sayRandomFactoidForKey(msg, "don't know")
 
   robot.respond /(forget|delete) (that)?(#(\d+))?/i, (msg) ->
-    factoid = bucket.deleteLastFactoidId() if msg.match[2]
+    factoid = bucket.deleteLastFactoidId(msg) if msg.match[2]
     factoid = bucket.deleteFactoidForId(msg.match[4]) if msg.match[4]
     if factoid
       msg.send "Ok, #{msg.message.user.name}, forgot that #{factoid.key} #{new Factoid(factoid.val).sayLiteral()}"
