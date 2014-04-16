@@ -23,11 +23,11 @@ class Karma
     @cache = {}
     
     @increment_responses = [
-      "+1!", "gained a level!", "is on the rise!", "leveled up!"
+      "+1!", "gained a level!", "is on the rise!", "leveled up!", "hrheehrhen."
     ]
   
     @decrement_responses = [
-      "took a hit! Ouch.", "took a dive.", "lost a life.", "lost a level."
+      "took a hit! Ouch.", "took a dive.", "lost a life.", "lost a level.", "pwned."
     ]
     
     @robot.brain.on 'loaded', =>
@@ -105,6 +105,7 @@ module.exports = (robot) ->
   
   robot.hear /^!score (\S+[^-\s])$/i, (msg) ->
     match = msg.match[1].toLowerCase()
+    msg.send "Trying to match #{match}"
     exclude = ["best", "worst", "--high", "--low"]
     if !(match in exclude) 
       msg.send "#{match} has #{karma.get(match)} points!"
