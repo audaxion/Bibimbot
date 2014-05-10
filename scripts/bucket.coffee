@@ -494,7 +494,7 @@ module.exports = (robot) ->
     bucket.listenForFactoid(msg, msg.match[1])
 
   robot.respond /(.+) (<reply>|<action>|is|are) (.+)/i, (msg) ->
-    if msg.match[1] and msg.match[3] and !(/memegen /i.test(msg.match[1]))
+    if msg.match[1] and msg.match[3] and !(/memegen /i.test(msg.match[1])) and !(/literal /i.test(msg.match[1]))
       factoid = bucket.addFactoid(msg.match[1], msg.match[2], msg.match[3])
       msg.send "Ok, #{msg.message.user.name}, #{factoid}" if factoid
 
