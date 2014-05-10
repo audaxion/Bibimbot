@@ -334,7 +334,7 @@ class Bucket
       (var\s\w+\stype)| #change type for var
       (something\srandom)| #something random
       (literal\s(.+))| #literal factoid
-      (.+)\s(is|are|<reply>|<action>)\s(.+) #don't trigger on creating factoid
+      (.+)\s(<reply>|<action>|is|are)\s(.+) #don't trigger on creating factoid
       )
     ///i
     unless message.match(matcher)
@@ -493,7 +493,7 @@ module.exports = (robot) ->
   robot.hear /(.*)/i, (msg) ->
     bucket.listenForFactoid(msg, msg.match[1])
 
-  robot.respond /(.+) (is|are|<reply>|<action>) (.+)/i, (msg) ->
+  robot.respond /(.+) (<reply>|<action>|is|are) (.+)/i, (msg) ->
     if msg.match[1] and msg.match[3] and !(/memegen /i.test(msg.match[1]))
       factoid = bucket.addFactoid(msg.match[1], msg.match[2], msg.match[3])
       msg.send "Ok, #{msg.message.user.name}, #{factoid}" if factoid
