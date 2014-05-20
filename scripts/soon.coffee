@@ -48,6 +48,7 @@ images = [
   "http://i.imgur.com/Y4ExtS5.gif",
   "http://i.imgur.com/pDXRVjp.jpg",
   "http://i.imgur.com/nHqPQrx.jpg",
+  "http://i.imgur.com/o60zPhw.jpg",
   "http://i.imgur.com/L2SZuzG.gif"
 ]
 
