@@ -36,5 +36,6 @@
   },
   "scripts": {
     "start": "bin/hubot -a hipchat"
-  }
+  },
+  "main": "bin/hubot"
 }
