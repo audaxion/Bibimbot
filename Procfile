@@ -1,1 +1,1 @@
-worker: bin/hubot -a hipchat
+web: bin/hubot -a hipchat
