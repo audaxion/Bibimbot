@@ -271,8 +271,8 @@ class Bucket
       @cache.last_factoid[msg.message.user.room] = factoid.id
       line = @parseFactoid(msg, factoid.say(key))
       switch factoid.verb
-        when "<action>" then @robot.adapter.action(msg.message.user, line)
-        else @robot.send {user: msg.message.user}, line
+        when "<action>" then @robot.send {user: msg.message.user}, "/me #{line}"
+        else @robot.send {user: msg.message.user, room: msg.message.user.room}, line
 
   checkForFactoid: (line) ->
     keys = (key for key, val of @cache.factoids when line.match(new RegExp(@escapeForRegExp(key), "i")))
@@ -353,7 +353,7 @@ class Bucket
       @sayRandomFactoidForKey(msg, key)
 
   sayRandomFactoid: ->
-    channels = process.env.HUBOT_IRC_ROOMS.split(",")
+    channels = process.env.HUBOT_HIPCHAT_ROOMS.split(",")
     for channel in channels
       @sayRandomFactoidForChannel(channel)
 
@@ -481,14 +481,14 @@ module.exports = (robot) ->
 
   bucket = new Bucket(robot, options.min_factoid_length)
 
-  robot.adapter.bot.addListener 'action', (from, channel, message) ->
-    msg = "message": {
-        "user": {
-          "name": "#{from}",
-          "room": "#{channel}"
-        }
-      }
-    bucket.listenForFactoid(msg, message)
+  #robot.adapter.bot.addListener 'action', (from, channel, message) ->
+  #  msg = "message": {
+  #      "user": {
+  #        "name": "#{from}",
+  #        "room": "#{channel}"
+  #      }
+  #    }
+  #  bucket.listenForFactoid(msg, message)
 
   robot.hear /(.*)/i, (msg) ->
     bucket.listenForFactoid(msg, msg.match[1])

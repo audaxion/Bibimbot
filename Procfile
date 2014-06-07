@@ -1,1 +1,1 @@
-worker: bin/hubot -a irc -n Bibimbot
+worker: bin/hubot -a hipchat

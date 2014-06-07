@@ -77,10 +77,10 @@ module.exports = (robot) ->
 
   history = new History(robot, options.lines_to_keep)
 
-  robot.adapter.bot.addListener 'action', (from, channel, message) ->
-    newMessage = "* #{from} #{message}"
-    historyentry = new HistoryEntry(from, channel, newMessage)
-    history.add historyentry
+  #robot.adapter.bot.addListener 'action', (from, channel, message) ->
+  #  newMessage = "* #{from} #{message}"
+  #  historyentry = new HistoryEntry(from, channel, newMessage)
+  #  history.add historyentry
 
   robot.hear /(.*)/i, (msg) ->
     if (msg.message.user.room)
