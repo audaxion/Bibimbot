@@ -271,7 +271,7 @@ class Bucket
       @cache.last_factoid[msg.message.user.room] = factoid.id
       line = @parseFactoid(msg, factoid.say(key))
       switch factoid.verb
-        when "<action>" then @robot.send {user: msg.message.user}, "/me #{line}"
+        when "<action>" then @robot.send {user: msg.message.user, room: msg.message.user.room}, "/me #{line}"
         else @robot.send {user: msg.message.user, room: msg.message.user.room}, line
 
   checkForFactoid: (line) ->
